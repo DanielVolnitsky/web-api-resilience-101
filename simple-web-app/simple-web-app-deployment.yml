@@ -1,0 +1,38 @@
+# A deployment is a resource that manages a set of identical pods.
+# It ensures that the desired number of pods are running and replaces any that fail or become unresponsive.
+# Deployments are used to manage stateless applications, where the individual pods can be replaced without affecting the overall state of the application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-web-app
+  template:
+    metadata:
+      labels:
+        app: simple-web-app
+    spec:
+      containers:
+        - name: simple-web-app
+          image: waytodanny/simple-web-app:v0.0.1
+          ports:
+            - containerPort: 8080
+---
+# A service is a resource that provides network access to a set of pods.
+# It creates a stable IP address and DNS name for a set of pods, and load-balances traffic across them.
+# Services are used to expose stateless or stateful applications to the network, and allow other components in the cluster to access them.
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-web-app
+spec:
+  type: NodePort
+  selector:
+    app: simple-web-app
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
